@@ -1,0 +1,6 @@
+max_relative_error_jump_back_hash_32_mean = 0.0012061364755306947
+max_relative_error_jump_back_hash_mean = 0.0008939769155618116
+max_relative_error_jump_hash_mean = 0.0035064021397666068
+max_relative_error_jump_back_hash_32_variance = 0.004996394918725056
+max_relative_error_jump_back_hash_variance = 0.0013848318521487712
+max_relative_error_jump_hash_variance = 0.0246777487736054

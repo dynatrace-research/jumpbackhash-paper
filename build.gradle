@@ -1,0 +1,132 @@
+//
+// Copyright (c) 2024 Dynatrace LLC. All rights reserved.
+//
+// This software and associated documentation files (the "Software")
+// are being made available by Dynatrace LLC for the sole purpose of
+// illustrating the implementation of certain algorithms which have
+// been published by Dynatrace LLC. Permission is hereby granted,
+// free of charge, to any person obtaining a copy of the Software,
+// to view and use the Software for internal, non-production,
+// non-commercial purposes only – the Software may not be used to
+// process live data or distributed, sublicensed, modified and/or
+// sold either alone or as part of or in combination with any other
+// software.
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+plugins {
+	id 'com.diffplug.spotless' version '6.25.0'
+}
+
+def figFiles = []
+
+def timeComplexityFigFiles = [
+	"paper/time_complexity.pdf"
+]
+
+task makeTimeComplexityCharts (type: Exec) {
+	def outputFileName = "results/time-complexity-errors.txt"
+	doFirst {
+		standardOutput = new FileOutputStream(outputFileName)
+	}
+	inputs.files "python/preamble.py", "python/time-complexity.py", "paper/symbols.tex"
+	outputs.files timeComplexityFigFiles, outputFileName
+	commandLine 'python', "python/time-complexity.py"
+}
+figFiles +=timeComplexityFigFiles
+
+
+def benchmarkFigFiles = ["paper/benchmark.pdf"]
+
+task makeBenchmarkCharts (type: Exec) {
+	inputs.files "python/preamble.py", "python/benchmark.py", "paper/symbols.tex", "results/benchmark.json"
+	outputs.files benchmarkFigFiles
+	commandLine 'python', "python/benchmark.py"
+}
+figFiles +=benchmarkFigFiles
+
+task pdfFigures {
+	group 'Main'
+	dependsOn makeTimeComplexityCharts, makeBenchmarkCharts
+}
+
+static def readPythonLicense(licenseName) {
+	File licenseFile = new File('licenses/' + licenseName + '.txt')
+	def line
+	def s = '#\n'
+	licenseFile.withReader { reader ->
+		while ((line = reader.readLine()) != null) {
+			s += '#'
+			if(!line.isEmpty()) {
+				s += ' '
+				s += line
+			}
+			s += '\n'
+		}
+	}
+	s += '#'
+	return s
+}
+
+static def readJavaLicense(licenseName) {
+	File licenseFile = new File('licenses/' + licenseName + '.txt')
+	def line
+	def s = '//\n'
+	licenseFile.withReader { reader ->
+		while ((line = reader.readLine()) != null) {
+			s += '//'
+			if(!line.isEmpty()) {
+				s += ' '
+				s += line
+			}
+			s += '\n'
+		}
+	}
+	s += '//'
+	return s
+}
+
+spotless {
+	def googleJavaFormatVersion = '1.19.2'
+	def blackVersion = '24.2.0'
+	def greclipseVersion = '4.29'
+	ratchetFrom 'origin/main'
+	apply plugin: 'groovy'
+	groovyGradle {
+		target 'build.gradle','java/build.gradle'
+		greclipse(greclipseVersion)
+		licenseHeader readJavaLicense('license'), 'plugins'
+	}
+	python {
+		target 'python/**/*.py'
+		black(blackVersion)
+		licenseHeader readPythonLicense('license'), '(import|from)'
+	}
+	java {
+		target 'java/**/*.java'
+		importOrder()
+		removeUnusedImports()
+		googleJavaFormat(googleJavaFormatVersion)
+		licenseHeader readJavaLicense('license')
+	}
+}
+
+
+repositories {
+	mavenCentral()
+}
+
+task runBenchmarks {
+	group 'main'
+	dependsOn ':java:jmh'
+}

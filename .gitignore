@@ -1,0 +1,7 @@
+java/.idea
+.gradle
+java/bin
+java/build
+.idea
+build
+python/__pycache__

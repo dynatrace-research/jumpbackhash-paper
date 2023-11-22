@@ -1,0 +1,129 @@
+//
+// Copyright (c) 2024 Dynatrace LLC. All rights reserved.
+//
+// This software and associated documentation files (the "Software")
+// are being made available by Dynatrace LLC for the sole purpose of
+// illustrating the implementation of certain algorithms which have
+// been published by Dynatrace LLC. Permission is hereby granted,
+// free of charge, to any person obtaining a copy of the Software,
+// to view and use the Software for internal, non-production,
+// non-commercial purposes only – the Software may not be used to
+// process live data or distributed, sublicensed, modified and/or
+// sold either alone or as part of or in combination with any other
+// software.
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+plugins {
+	id 'java'
+	id 'jacoco'
+	id 'me.champeau.jmh' version '0.7.2'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'com.dynatrace.hash4j:hash4j:0.17.0'
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.2'
+	testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.2'
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.10.2'
+	testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.25.3'
+	testImplementation group: 'org.hipparchus', name: 'hipparchus-stat', version: '3.0'
+	testImplementation group: 'org.hipparchus', name: 'hipparchus-optim', version: '3.0'
+	testImplementation group: 'commons-codec', name: 'commons-codec', version: '1.16.1'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+java {
+	toolchain {
+		languageVersion.set(JavaLanguageVersion.of(21))
+	}
+	withJavadocJar()
+	withSourcesJar()
+}
+
+sourceSets {
+	main
+	test
+	jmh
+}
+
+
+task runRandomValueConsumptionSimulation(type: JavaExec) {
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.dynatrace.jumpbackhash.RandomValueConsumptionSimulation'
+	jvmArgs '-Xmx16g'
+
+	outputs.files "../results/random_value_consumption_simulation.csv.csv"
+}
+
+
+jmh {
+	timeUnit = 'ns'
+	timeOnIteration = '200ms'
+	warmup = '200ms'
+	resultFormat = 'JSON'
+}
+
+tasks.register('copyBenchmarkReport', Copy) {
+	from('build/results/jmh/') {
+		include 'results.*'
+		rename 'results', 'benchmark-results'
+	}
+	into '../results'
+}
+
+tasks.register('deleteBenchmarkReport', Delete) {
+	delete 'build/results/jmh/results.json'
+}
+
+jacoco {
+	toolVersion = '0.8.11'
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+		csv.required = true
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 1.0
+				counter = 'LINE'
+			}
+			limit {
+				minimum = 1.0
+				counter = 'BRANCH'
+			}
+		}
+	}
+}
+
+
+tasks.withType(Test).configureEach {
+	useJUnitPlatform()
+}
+
+tasks.test.finalizedBy jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification
+tasks.jmh.finalizedBy copyBenchmarkReport
+tasks.copyBenchmarkReport.finalizedBy deleteBenchmarkReport
