@@ -1,4 +1,4 @@
-black==24.4.0
+black==24.4.2
 matplotlib==3.8.2
 numpy==1.26.3
 scipy==1.11.4
