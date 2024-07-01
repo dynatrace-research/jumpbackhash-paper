@@ -69,7 +69,7 @@ task runRandomValueConsumptionSimulation(type: JavaExec) {
 	mainClass = 'com.dynatrace.jumpbackhash.RandomValueConsumptionSimulation'
 	jvmArgs '-Xmx16g'
 
-	outputs.files "../results/random_value_consumption_simulation.csv.csv"
+	outputs.files "../results/random_value_consumption_simulation.csv"
 }
 
 
