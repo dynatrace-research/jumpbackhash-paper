@@ -30,6 +30,6 @@ public class ModuloMapper implements BucketMapper {
 
   @Override
   public int getBucket(long k, int n) {
-    return (int) ((k & 0x7FFFFFFFFFFFFFFFL) % n);
+    return (int) ((k & 0x7FFFFFFFFFFFFFFFL) % n); // ignore sign bit to ensure nonnegative result
   }
 }
