@@ -28,7 +28,7 @@ The distribution of keys to a given number of buckets is a fundamental task in d
    ./gradlew pdfFigures
    ```
    This task also evaluates the maximum absolute deviations from the predicted expectation and variance of the number of consumed random values. The results can be found in `results/time-complexity-errors.txt`.
-7. To run all unit tests including tests for monotonicity and uniformity execute the `test` task (takes ~5min):
+7. To run all unit tests including tests for monotonicity and uniformity execute the `test` task (takes ~7min):
    ```
    ./gradlew test
    ```
