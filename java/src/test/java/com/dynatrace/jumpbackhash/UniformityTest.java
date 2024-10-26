@@ -56,6 +56,7 @@ interface UniformityTest extends BaseTest {
     return IntStream.of(
         Integer.MAX_VALUE,
         Integer.MAX_VALUE - 1,
+        0x60000000, // 3*2^29
         0x40000001, // 2^30 + 1
         0x40000000, // 2^30
         0x3FFFFFFF, // 2^30 - 1
@@ -66,7 +67,7 @@ interface UniformityTest extends BaseTest {
         0x18000000, // 3*2^27
         0x10000001, // 2^28 + 1
         0x10000000, // 2^28
-        0x0FFFFFFF); // 2^28 + 1
+        0x0FFFFFFF); // 2^28 - 1
   }
 
   private static double calculateTestSpecificAlpha(IntStream numBucketsStream) {

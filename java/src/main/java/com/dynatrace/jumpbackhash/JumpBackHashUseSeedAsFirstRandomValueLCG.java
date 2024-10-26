@@ -32,7 +32,8 @@ import static java.lang.Integer.numberOfLeadingZeros;
 /**
  * This is an implementation of JumpBackHash that uses the 64-bit hash key directly as random value.
  * Further random bits are generated using a 64-bit linear congruential generator (LCG). As it is
- * known that the lower bits have poor statistical quality, only the upper 32 bits are used.
+ * known that the lower bits have poor statistical quality, only the upper 32 bits are used. The
+ * outer loop of JumpBackHash has been unrolled, as it is known that there are at most 2 iterations.
  */
 public class JumpBackHashUseSeedAsFirstRandomValueLCG implements BucketMapper {
 

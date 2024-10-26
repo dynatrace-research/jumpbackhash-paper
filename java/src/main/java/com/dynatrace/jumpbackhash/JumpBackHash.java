@@ -30,11 +30,12 @@ import static java.lang.Integer.bitCount;
 import static java.lang.Integer.numberOfLeadingZeros;
 import static java.util.Objects.requireNonNull;
 
+/** This is the JumpBackHash Java implementation as described in the paper. */
 public class JumpBackHash implements BucketMapper {
 
   private final PseudoRandomGenerator randomGenerator;
 
-  JumpBackHash(PseudoRandomGenerator pseudoRandomGenerator) {
+  public JumpBackHash(PseudoRandomGenerator pseudoRandomGenerator) {
     this.randomGenerator = requireNonNull(pseudoRandomGenerator);
   }
 

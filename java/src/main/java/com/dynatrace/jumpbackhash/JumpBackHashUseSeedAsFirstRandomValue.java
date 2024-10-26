@@ -30,11 +30,16 @@ import static java.lang.Integer.bitCount;
 import static java.lang.Integer.numberOfLeadingZeros;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * This is an implementation of JumpBackHash that uses the 64-bit hash key directly as random value.
+ * The outer loop of JumpBackHash has been unrolled, as it is known that there are at most 2
+ * iterations.
+ */
 public class JumpBackHashUseSeedAsFirstRandomValue implements BucketMapper {
 
   private final PseudoRandomGenerator randomGenerator;
 
-  JumpBackHashUseSeedAsFirstRandomValue(PseudoRandomGenerator pseudoRandomGenerator) {
+  public JumpBackHashUseSeedAsFirstRandomValue(PseudoRandomGenerator pseudoRandomGenerator) {
     this.randomGenerator = requireNonNull(pseudoRandomGenerator);
   }
 

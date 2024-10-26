@@ -28,11 +28,11 @@ package com.dynatrace.jumpbackhash;
 
 import static java.util.Objects.requireNonNull;
 
-class JumpHash implements BucketMapper {
+public class JumpHash implements BucketMapper {
 
   private final PseudoRandomGenerator randomGenerator;
 
-  JumpHash(PseudoRandomGenerator pseudoRandomGenerator) {
+  public JumpHash(PseudoRandomGenerator pseudoRandomGenerator) {
     this.randomGenerator = requireNonNull(pseudoRandomGenerator);
   }
 

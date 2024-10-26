@@ -32,7 +32,7 @@ public class RandomMapper implements BucketMapper {
 
   private final PseudoRandomGenerator randomGenerator;
 
-  RandomMapper(PseudoRandomGenerator pseudoRandomGenerator) {
+  public RandomMapper(PseudoRandomGenerator pseudoRandomGenerator) {
     this.randomGenerator = requireNonNull(pseudoRandomGenerator);
   }
 

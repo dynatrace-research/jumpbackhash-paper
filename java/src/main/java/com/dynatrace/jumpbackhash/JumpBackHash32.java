@@ -34,7 +34,7 @@ public class JumpBackHash32 implements BucketMapper {
 
   private final PseudoRandomGenerator randomGenerator;
 
-  JumpBackHash32(PseudoRandomGenerator pseudoRandomGenerator) {
+  public JumpBackHash32(PseudoRandomGenerator pseudoRandomGenerator) {
     this.randomGenerator = requireNonNull(pseudoRandomGenerator);
   }
 

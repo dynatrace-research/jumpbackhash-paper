@@ -33,7 +33,7 @@ public class ICWS implements BucketMapper {
 
   private final PseudoRandomGenerator randomGenerator;
 
-  ICWS(PseudoRandomGenerator pseudoRandomGenerator) {
+  public ICWS(PseudoRandomGenerator pseudoRandomGenerator) {
     this.randomGenerator = requireNonNull(pseudoRandomGenerator);
   }
 

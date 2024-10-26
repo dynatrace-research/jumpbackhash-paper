@@ -31,7 +31,8 @@ import static java.lang.Integer.numberOfLeadingZeros;
 
 /**
  * This is an implementation of JumpBackHash that uses the 64-bit hash key directly as random value.
- * Further random bits are generated using a 64-bit xor-shift generator.
+ * Further random bits are generated using a 64-bit xor-shift generator. The outer loop of
+ * JumpBackHash has been unrolled, as it is known that there are at most 2 iterations.
  */
 public class JumpBackHashUseSeedAsFirstRandomValueXorShift implements BucketMapper {
 
